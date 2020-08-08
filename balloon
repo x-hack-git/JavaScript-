@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    function drawIchimatsu(patern1, patern2) {
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          setTimeout(() => drawRect(i, j, patern1, patern2), 40 * (i+j));
+        }
+      }
+    }
+    function drawRect(i, j, patern1, patern2) {
+      ctx.fillStyle = ((i + j) % 2 == 0) ? patern1 : patern2;
+      ctx.fillRect(20 * i, 20 * j, 20, 20);
+    }
+    setInterval(() => { drawIchimatsu("#cd12ab", "#ee1288") }, 1000);
+    setInterval(() => { drawIchimatsu("#dc338f", "#cc336e") }, 1500);
+  </script>
+</body>
+
+</html>
