@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    // メインループ
+    function drawIchimatsu() {
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          drawRect(i, j);
+          // setTimeout(() => drawRect(i, j), 40 * (i + j));
+        }
+      }
+    }
+    // 四角をキャンバスに描く
+    function drawRect(i, j) {
+      ctx.fillStyle = getRandomColor();
+      ctx.fillRect(20 * i, 20 * j, 20, 20);
+    }
+    // ランダムな色を返す
+    function getRandomColor() {
+      let r = Math.floor(Math.random() * 255);
+      let g = Math.floor(Math.random() * 255);
+      let b = Math.floor(Math.random() * 255);
+      return `rgb( ${r} , ${g} , ${b} )`;
+    }
+
+    setInterval(() => { drawIchimatsu() }, 200);
+  </script>
+</body>
+
+</html>
