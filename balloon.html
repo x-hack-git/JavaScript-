@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,24 +8,92 @@
   <title>Document</title>
 </head>
 
-<body>
-  <canvas id="canvas" width="500" height="500"></canvas>
+<body style="text-align: center;">
+  <canvas id="canvas" width="800" height="800"></canvas>
   <script>
+    "use strict";
+
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    function drawIchimatsu(patern1, patern2) {
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-          setTimeout(() => drawRect(i, j, patern1, patern2), 40 * (i+j));
+    const NUMBER = 500;
+    const CANVAS_SIZE = 800;
+    const allCircle = []; // 全ての円のインスタンスが入った、配列！
+    const FrameRate = 60; // 
+
+    class Circle {
+      // コンストラクタ: new した時に呼ばれるメソッド
+      constructor() {
+        // 初期値を生成
+        let speed_x = -10 + Math.random() * 20;
+        let speed_y = -10 + Math.random() * 20;
+        let radius = Math.random() * 30 + 10;
+
+        this.speed_x = speed_x; // 円のx方向への移動速度
+        this.speed_y = speed_y; // 円のy方向への移動速度
+        this.pos_x = CANVAS_SIZE / 2;       // 現在の位置 x は中央
+        this.pos_y = CANVAS_SIZE / 2;       // 現在の位置 y は中央
+        this.color = this.getRandomColor();     // 円の色
+        this.radius = radius;   // 円の半径
+      }
+      // 自分の情報を使って円を描画する
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.pos_x, this.pos_y, this.radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+      // x, y座標を書き換えて移動するメソッド
+      move() {
+        // x, y の座標を変化させる
+        this.pos_x = this.pos_x + this.speed_x;
+        this.pos_y = this.pos_y + this.speed_y;
+
+        this.bound();
+        this.draw();
+      }
+      // 閾値を超えた場合、バウンドさせる
+      bound() {
+        if (this.pos_x < 0 || this.pos_x > CANVAS_SIZE) {
+          this.speed_x *= -1;
+        }
+        if (this.pos_y < 0 || this.pos_y > CANVAS_SIZE) {
+          this.speed_y *= -1;
         }
       }
+      // ランダムな色を返す
+      getRandomColor() {
+        let r = Math.floor(Math.random() * 255);
+        let g = Math.floor(Math.random() * 255);
+        let b = Math.floor(Math.random() * 255);
+        return `rgb( ${r} , ${g} , ${b} )`;
+      }
     }
-    function drawRect(i, j, patern1, patern2) {
-      ctx.fillStyle = ((i + j) % 2 == 0) ? patern1 : patern2;
-      ctx.fillRect(20 * i, 20 * j, 20, 20);
+
+    // 500個のボールを作る
+    for (let i = 0; i < NUMBER; i++) {
+      allCircle.push(new Circle());
     }
-    setInterval(() => { drawIchimatsu("#cd12ab", "#ee1288") }, 1000);
-    setInterval(() => { drawIchimatsu("#dc338f", "#cc336e") }, 1500);
+
+    // 全ての円のインスタンスのmoveメソッドを呼ぶ関数
+    function callDraw() {
+      ctx.globalCompositeOperation = "color-dodge";
+      allCircle.forEach((circle) => {
+        circle.move();
+      })
+    }
+
+    // キャンバスをクリアする
+    function clearCanvas() {
+      ctx.globalCompositeOperation = "source-in";
+      ctx.fillStyle = "rgba(8,8,12,.2)";
+      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    }
+
+    // メインの描画関数
+    setInterval(() => {
+      clearCanvas();
+      callDraw();
+    }, 1000 / FrameRate);
   </script>
 </body>
 
